@@ -9,6 +9,7 @@ CREATE TABLE ppc(
   PRIMARY KEY (oAuthId)
 );
 CREATE TABLE people(
+  peopleId
   peopleDashboard INT UNSIGNED NOT NULL,
   peopleLists INT AUTO_INCREMENT,
   peopleWorkflows INT UNSIGNED NOT NULL,
