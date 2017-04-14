@@ -129,7 +129,7 @@ class People implements \JsonSerializable {
     public function setPeopleWorkflows(?int $newPeopleWorkflows) : void  {
         // if people workflows is null immediately return it
         if($newPeopleWorkflows === null) {
-            $this->peopleWorkflows = null;
+            $this->peopleWorkflows = null;v
             return;
         }
         // verify the people workflows is positive
@@ -149,5 +149,44 @@ class People implements \JsonSerializable {
     }
     /**
      * mutator method for people people
+     *
+     * @param string $newPeoplePeople new value of people people
+     * @throws \InvalidArgumentException if $newPeoplePeople is not a string or insecure
+     * @throws \RangeException if $newPeoplePeople is > 64 characters
+     * @throws \TypeError if $newPeoplePeople is not a string
      */
+    public function setPeoplePeople(string $newPeoplePeople) : void {
+        // verify the people people is secure
+        $newPeoplePeople = trim($newPeoplePeople);
+        $newPeoplePeople = filter_var($newPeoplePeople, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        if(empty($newPeoplePeople) === true) {
+            throw(new \InvalidArgumentException("people people is empty or insecure"));
+        }
+        // verify the people people content will fit in the database
+        if(strlen($newPeoplePeople) > 64) {
+            throw(new \RangeException("people people is too large"));
+        }
+        // store the people people content
+        $this->peoplePeople = $newPeoplePeople;
+    }
+    /**
+     * inserts this People into mySQL
+     *
+     * @param \PDO $pdo PDO connection object
+     * @throws \PDOException when mySQL related errors occur
+     * @throws \TypeError if $pdo is not a PDO connection object
+     */
+    public function insert(\PDO $pdo) : void {
+        // enfore the peopleDashboard is null (i.e, dont insert a dashboard that already exists)
+        if($this->peopleDashboard !== null) {
+            throw(new \PDOException("not a new dashboard"));
+        }
+        // create query template
+        $query = "INSERT INTO people(peopleDashboard, peopleWorkflows, peopleLists, peoplePeople) VALUES(:peopleDashboard, :peopleWorkflows, :peopleLists, :peoplePeople)";
+        $statement = $pdo->prepare($query);
+        $parameters = ["peopleDashboard" => $this->peopleDashboard, "peopleWorkflows" => $this->peopleWorkflows, "peopleLists" => $this->peopleLists, "peoplePeople" => $this->peoplePeople];
+        $statement->execute($parameters);
+        // update the null peopleDashboard with what mySQl just gave us
+        $this->peopleDashboard = intval($pdo->lastInsertId());
+    }
 }
