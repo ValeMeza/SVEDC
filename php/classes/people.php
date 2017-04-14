@@ -189,4 +189,17 @@ class People implements \JsonSerializable {
         // update the null peopleDashboard with what mySQl just gave us
         $this->peopleDashboard = intval($pdo->lastInsertId());
     }
+    /**
+     * deletes this people from mySQL
+     *
+     * @param \PDO $pdo PDO connection object
+     * @throws \PDOException when mySQL related errors occur
+     * @throws \TypeError if $pdo is not a PDO connection object
+     */
+    public function delete(\PDO $pdo) : void {
+        // enforce the peopleDashboard is not null (i.e, dont delete a people that hasn't been inserted)
+        if($this->peopleDashboard === null) {
+            throw(new \PDOException("unable to delete people that does not exist"));
+        }
+    }
 }
