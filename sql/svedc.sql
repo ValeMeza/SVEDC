@@ -10,11 +10,12 @@ CREATE TABLE ppc(
 );
 CREATE TABLE people(
   peopleDashboard INT UNSIGNED NOT NULL,
-  peopleLists VARCHAR(80),
   peopleWorkflows INT UNSIGNED NOT NULL,
+  peopleLists VARCHAR(80),
   peoplePeople VARCHAR(64) NOT NULL,
   INDEX(peopleWorkflows),
-  FOREIGN KEY(peopleDashboard) REFERENCES ppc(oAuthId)
+  PRIMARY KEY(peopleDashboard),
+  FOREIGN KEY(peopleWorkflows) REFERENCES ppc(oAuthId)
 );
 CREATE TABLE registrations(
   registrationsEvents INT UNSIGNED NOT NULL,

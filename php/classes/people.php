@@ -25,7 +25,7 @@ class People implements \JsonSerializable {
     /**
      * workflow for people
      */
-    private $peopleWorkflow;
+    private $peopleWorkflows;
     /**
      * people of people
      */
@@ -35,18 +35,18 @@ class People implements \JsonSerializable {
      * constructor for this people class
      * @param int $newPeopleDashboard forign key for people
      * @param string $newPeopleLists list of people
-     * @param int $newPeopleWorkflow workflow for people
+     * @param int $newPeopleWorkflows workflow for people
      * @param string $newPeoplePeople people on people
      * @throws \InvalidArgumentException if data types are not valid
      * @throws \RangeException if data types are to long
      * @throws \TypeError if data types violate type hints
      * @throws \Exception if some other exception occurs
      */
-    public function __construct(int $newPeopleDashboard = null, string $newPeopleLists = null, int $newPeopleWorkflow = null, string $newPeoplePeople = null) {
+    public function __construct(int $newPeopleDashboard = null, string $newPeopleLists = null, int $newPeopleWorkflows = null, string $newPeoplePeople = null) {
         try {
             $this->setPeopleDashboard($newPeopleDashboard);
             $this->setPeopleLists($newPeopleLists);
-            $this->setPeopleWorkflow($newPeopleWorkflow);
+            $this->setPeopleWorkflows($newPeopleWorkflows);
             $this->setPeoplePeople($newPeoplePeople);
         } catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
             $exceptionType = get_class($exception);
@@ -84,7 +84,7 @@ class People implements \JsonSerializable {
     /**
      * accessor method for people Lists
      *
-     * @return int value of people lists
+     * @return string value of people lists
      */
     public function getPeopleLists() : string {
         return($this->peopleLists);
@@ -111,5 +111,43 @@ class People implements \JsonSerializable {
         // store the people content
         $this->peopleLists = $newPeopleLists;
     }
-
+    /**
+     * accessor method for people workflows
+     *
+     * @return int for people workflows
+     */
+    public function getPeopleWorkflows() : int {
+        return($this->peopleWorkflows);
+    }
+    /**
+     * mutator method for people workflows
+     *
+     * @param int|null $newPeopleWorkflows
+     * @throws \RangeException if $newPeopleWorkflows is not positive
+     * @throws \TypeError if $newPeopleWorkflows is not an intger
+     */
+    public function setPeopleWorkflows(?int $newPeopleWorkflows) : void  {
+        // if people workflows is null immediately return it
+        if($newPeopleWorkflows === null) {
+            $this->peopleWorkflows = null;
+            return;
+        }
+        // verify the people workflows is positive
+        if($newPeopleWorkflows <= 0) {
+            throw(new \RangeException("people workflows is not positive"));
+        }
+        // convert and store the people workflows
+        $this->peopleWorkflows = $newPeopleWorkflows;
+    }
+    /**
+     * accessor method for people workflows
+     *
+     * @return string value of people workflows
+     */
+    public function getPeoplePeople() : string {
+        return($this->peoplePeople);
+    }
+    /**
+     * mutator method for people people
+     */
 }
