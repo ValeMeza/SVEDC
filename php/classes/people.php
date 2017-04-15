@@ -129,7 +129,7 @@ class People implements \JsonSerializable {
     public function setPeopleWorkflows(?int $newPeopleWorkflows) : void  {
         // if people workflows is null immediately return it
         if($newPeopleWorkflows === null) {
-            $this->peopleWorkflows = null;v
+            $this->peopleWorkflows = null;
             return;
         }
         // verify the people workflows is positive

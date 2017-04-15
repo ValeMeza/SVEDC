@@ -4,9 +4,9 @@ DROP TABLE IF EXISTS registrations;
 DROP TABLE IF EXISTS people;
 DROP TABLE IF EXISTS ppc;
 CREATE TABLE ppc(
-  oAuthId INT UNSIGNED AUTO_INCREMENT NOT NULL,
-  oAuthServiceName VARCHAR(32) NOT NULL,
-  PRIMARY KEY (oAuthId)
+  ppcOAuthId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  ppcOAuthServiceName VARCHAR(32) NOT NULL,
+  PRIMARY KEY (ppcOAuthId)
 );
 CREATE TABLE people(
   peopleDashboard INT UNSIGNED NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE people(
   peoplePeople VARCHAR(64) NOT NULL,
   INDEX(peopleWorkflows),
   PRIMARY KEY(peopleDashboard),
-  FOREIGN KEY(peopleWorkflows) REFERENCES ppc(oAuthId)
+  FOREIGN KEY(peopleWorkflows) REFERENCES ppc(ppcOAuthId)
 );
 CREATE TABLE registrations(
   registrationsEvents INT UNSIGNED NOT NULL,
