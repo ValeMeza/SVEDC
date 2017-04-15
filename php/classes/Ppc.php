@@ -106,6 +106,27 @@ class Ppc implements \JsonSerializable {
 		// store the ppcOAuth service name content
 		$this->ppcOAuthServiceName = $newPpcOAuthServiceName;
 	}
+	/**
+	 * inserts this PPC into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 */
+	public function insert(\PDO $pdo) {
+		// enforce the ppcOAuthId is null (i.e., don't insert a ppcOAuth that already exists)
+		if($this->ppcOAuthId !== null) {
+			throw(new \PDOException("PPC already exists..."));
+		}
+		// create query template
+		$query = "INSERT INTO ppc(ppcOAuthServiceName) VALUES(:ppcOAuthServiceName)";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the placeholders in the template
+		$parameters = ["ppcOAuthServiceName" => $this->ppcOAuthServiceName];
+		$statement->execute($parameters);
+		// update the null ppcOAuthId with what mySQL just gave us
+		$this->ppcOAuthId = intval($pdo->lastInsertId());
+	}
 
 	/**
 	 * formats the state variables for JSON serialization
