@@ -76,6 +76,36 @@ class Ppc implements \JsonSerializable {
 		// convert and store the ppcOAuth id
 		$this->ppcOAuthId = $newPpcOAuthId;
 	}
+	/**
+	 * accessor method for ppcOAuth service name
+	 *
+	 * @return string value of ppcOAuth service name
+	 **/
+	public function getPpcOAuthServiceName() {
+		return($this->ppcOAuthServiceName);
+	}
+	/**
+	 * mutator method for ppcOAuth service name
+	 *
+	 * @param string $newPpcOAuthServiceName new value of ppcOAuth service name
+	 * @throws \InvalidArgumentException if $newPpcOAuthServiceName is insecure
+	 * @throws \RangeException if $newPpcOAuthServiceName is > 32 characters
+	 * @throws \TypeError if $newPpcOAuthServiceName is not a string
+	 **/
+	public function setPpcOAuthServiceName(string $newPpcOAuthServiceName) {
+		// verify that the ppcOAuth service name content is secure
+		$newPpcOAuthServiceName = trim($newPpcOAuthServiceName);
+		$newPpcOAuthServiceName = filter_var($newPpcOAuthServiceName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newPpcOAuthServiceName) === true) {
+			throw(new \InvalidArgumentException("ppcOAuth service name is empty or insecure..."));
+		}
+		// verify that ppcOAuth service name content will fit in the database
+		if(strlen($newPpcOAuthServiceName) > 32) {
+			throw(new \RangeException("ppcOAuth service name is too long..."));
+		}
+		// store the ppcOAuth service name content
+		$this->ppcOAuthServiceName = $newPpcOAuthServiceName;
+	}
 
 	/**
 	 * formats the state variables for JSON serialization
