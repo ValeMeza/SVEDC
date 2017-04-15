@@ -161,7 +161,34 @@ class Ppc implements \JsonSerializable {
 		}
 		return($ppc);
 	}
-
+	/**
+	 * get ALL the PPCs
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @return \SplFixedArray SplFixedArray of PPCs found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 */
+	public static function getAllPpcs(\PDO $pdo) {
+		// create query template
+		$query = "SELECT ppcOAuthId, ppcOAuthServiceName FROM ppc";
+		$statement = $pdo->prepare($query);
+		$statement->execute();
+		// build an array of PPCs
+		$ppcs = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$ppc = new Ppc($row["ppcOAuthId"], $row["ppcOAuthServiceName"]);
+				$ppcs[$ppcs->key()] = $ppc;
+				$ppcs->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return($ppcs);
+	}
 	/**
 	 * formats the state variables for JSON serialization
 	 *
