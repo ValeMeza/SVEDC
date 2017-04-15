@@ -127,6 +127,40 @@ class Ppc implements \JsonSerializable {
 		// update the null ppcOAuthId with what mySQL just gave us
 		$this->ppcOAuthId = intval($pdo->lastInsertId());
 	}
+	/**
+	 * gets the PPC by ppcOAuth id
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param int $ppcOAuthId PPC id to search for
+	 * @return Ppc|null PPC found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 */
+	public static function getPpcByPpcOAuthId(\PDO $pdo, int $ppcOAuthId) {
+		// sanitize the oAuthId before searching
+		if($ppcOAuthId <= 0) {
+			throw(new \PDOException("ppcOAuth id is 0 or negative..."));
+		}
+		// create query template
+		$query = "SELECT ppcOAuthId, ppcOAuthServiceName FROM ppc WHERE ppcOAuthId = :ppcOAuthId";
+		$statement = $pdo->prepare($query);
+		// bind the ppcOAuth id to the placeholder in the template
+		$parameters = ["ppcOAuthId" => $ppcOAuthId];
+		$statement->execute($parameters);
+		// grab the PPC from mySQL
+		try {
+			$ppc = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$ppc = new Ppc($row["ppcOAuthId"], $row["ppcOAuthServiceName"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($ppc);
+	}
 
 	/**
 	 * formats the state variables for JSON serialization
